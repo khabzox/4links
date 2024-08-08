@@ -29,19 +29,13 @@ import {
   ClerkProvider,
 } from '@clerk/nextjs'
 
-import NavBar from "@/components/nav-bar";
-import Footer from "@/components/footer";
 
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
       <html lang="en">
         <body className={`${inter.className} text-primary`}>
-      <NavBar />
-
           {children}
-      <Footer />
-
         </body>
       </html>
     </ClerkProvider>

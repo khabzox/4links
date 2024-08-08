@@ -5,8 +5,8 @@ import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import Link from 'next/link';
 import { v4 as uuidv4 } from 'uuid';  // Install uuid package if not already installed
 
-import { Button } from './ui/button';
-import { Input } from './ui/input';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 export default function ShortLinks() {
   const [originalUrl, setOriginalUrl] = useState('');
