@@ -28,7 +28,7 @@ const VisitorDeviceChart = ({ shortId }) => {
                 const visitorsCollectionRef = collection(db, `users/${userId}/shortLinks/${linkId}/visitors`);
                 const visitorSnapshot = await getDocs(visitorsCollectionRef);
 
-                if (!visitorSnapshot) {
+                if (visitorSnapshot.empty) {
                     console.warn('No visitors found');
                     setError('No visitors found.');
                 } else {
@@ -36,18 +36,18 @@ const VisitorDeviceChart = ({ shortId }) => {
                     const deviceCounts = visitorSnapshot.docs.reduce((acc, doc) => {
                         const data = doc.data();
                         const userAgent = data.userAgent || 'Unknown';
-                        console.log('Raw User-Agent:', userAgent); // Debugging line
+                        // console.log('Raw User-Agent:', userAgent); // Debugging line
                         const parser = new UAParser(userAgent);
                         const deviceType = parser.getDevice().type || 'desktop'; // Fallback to 'desktop'
-                        console.log('Parsed Device Type:', deviceType); // Debugging line
+                        // console.log('Parsed Device Type:', deviceType); // Debugging line
                         acc[deviceType] = (acc[deviceType] || 0) + 1;
                         return acc;
                     }, {});
 
                     setDeviceData(deviceCounts);
                 }
-            } catch (error) {
-                console.error('Error fetching visitor data:', error);
+            } catch (err) {
+                console.error('Error fetching visitor data:', err);
                 setError('Error fetching visitor data');
             } finally {
                 setLoading(false);
@@ -55,7 +55,7 @@ const VisitorDeviceChart = ({ shortId }) => {
         };
 
         fetchDeviceData();
-    }, [linkId, userId]); // Fetch data when shortId or userId changes
+    }, [linkId, userId]);
 
     const chartData = {
         labels: Object.keys(deviceData),

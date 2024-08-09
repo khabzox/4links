@@ -1,23 +1,24 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import MapComponent from './map-component'; // Ensure this path is correct
+import MapComponent from './map-component'; 
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '@/config/firebase'; // Ensure this path is correct
+import { db } from '@/config/firebase'; 
 import { useUser } from '@clerk/nextjs';
 
 const LocationAnalytics = ({ shortId }) => {
-  const linkId = shortId.link
+  const linkId = shortId.link;
   const [locations, setLocations] = useState([]);
   const [error, setError] = useState('');
+  const [noDataMessage, setNoDataMessage] = useState(''); 
   const { user } = useUser();
   const userId = user?.id;
 
   useEffect(() => {
     const fetchVisitorData = async () => {
       try {
-        // Fetch visitors data for the given shortId and userId
-        console.log(shortId)
+        if (!userId || !shortId) return; // Ensure userId and shortId are valid
+
         const visitorsCollectionRef = collection(db, `users/${userId}/shortLinks/${shortId}/visitors`);
         const querySnapshot = await getDocs(visitorsCollectionRef);
 
@@ -27,7 +28,12 @@ const LocationAnalytics = ({ shortId }) => {
           lng: visitor.longitude || 0 // Default to 0 if longitude is not available
         }));
 
-        setLocations(fetchedLocations);
+        if (fetchedLocations.length === 0) {
+          setNoDataMessage('Data has not been received yet.'); // Set message if no data
+        } else {
+          setLocations(fetchedLocations);
+          setNoDataMessage(''); // Clear message if data is available
+        }
 
       } catch (err) {
         console.error('Error fetching visitor data:', err);
@@ -36,12 +42,14 @@ const LocationAnalytics = ({ shortId }) => {
     };
 
     fetchVisitorData();
-  }, [userId, shortId]); // Ensure this effect runs when userId or linkId changes
+  }, [userId, shortId]);
 
   return (
     <div>
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      {locations.length > 0 ? (
+      {noDataMessage ? (
+        <p className="text-red-500">{noDataMessage}</p>
+      ) : locations.length > 0 ? (
         <MapComponent locations={locations} />
       ) : (
         <p>Loading map...</p>

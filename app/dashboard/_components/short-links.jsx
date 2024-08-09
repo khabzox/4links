@@ -6,10 +6,8 @@ import {
   collection,
   addDoc,
   getDocs,
-  query,
-  where,
-  deleteDoc,
   doc,
+  deleteDoc,
   setDoc
 } from 'firebase/firestore';
 
@@ -31,12 +29,10 @@ export default function ShortLinks() {
   const [originalUrl, setOriginalUrl] = useState('');
   const [urls, setUrls] = useState([]);
   const [error, setError] = useState('');
-  const [linksCount, setLinksCount] = useState(0);
+  const [editing, setEditing] = useState(null); // Track which link is being edited
+  const [updatedUrl, setUpdatedUrl] = useState(''); // Store the updated URL
 
   useEffect(() => {
-    const count = localStorage.getItem('linksCount') || 0;
-    setLinksCount(parseInt(count, 10));
-
     const fetchUrls = async () => {
       if (!user) return;
 
@@ -56,10 +52,6 @@ export default function ShortLinks() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (linksCount >= 10) {
-      setError('You can only create up to 10 URLs.');
-      return;
-    }
 
     if (user) {
       const userDocRef = doc(db, "users", user.id);
@@ -89,10 +81,6 @@ export default function ShortLinks() {
           setUrls(prevUrls => [...prevUrls, { originalUrl, shortId }]);
           setOriginalUrl('');
           setError('');
-  
-          const newCount = linksCount + 1;
-          setLinksCount(newCount);
-          localStorage.setItem('linksCount', newCount);
         } catch (err) {
           console.error('Failed to create short link:', err);
           setError('Failed to create short link');
@@ -105,7 +93,6 @@ export default function ShortLinks() {
 
   const deleteShortLink = async (shortId) => {
     try {
-      // Get the user's ID, make sure it is available
       const userId = user?.id;
       if (!userId) {
         console.error('User ID is not available');
@@ -113,20 +100,12 @@ export default function ShortLinks() {
         return;
       }
   
-      // Reference to the specific short link document
       const shortLinksCollectionRef = collection(db, "users", userId, "shortLinks");
       const shortLinkRef = doc(shortLinksCollectionRef, shortId);
   
-      // Delete the document
       await deleteDoc(shortLinkRef);
   
-      // Update local state to remove the deleted link
       setUrls(prevUrls => prevUrls.filter(link => link.shortId !== shortId));
-  
-      // Update count and local storage
-      const newCount = linksCount - 1;
-      setLinksCount(newCount);
-      localStorage.setItem('linksCount', newCount);
   
       console.log('Short link deleted successfully');
     } catch (err) {
@@ -135,30 +114,80 @@ export default function ShortLinks() {
     }
   };
 
+  const startEditing = (link) => {
+    setEditing(link.shortId);
+    setUpdatedUrl(link.originalUrl);
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    if (editing && updatedUrl) {
+      try {
+        const shortLinkRef = doc(db, "users", user.id, "shortLinks", editing);
+        await setDoc(shortLinkRef, {
+          originalUrl: updatedUrl,
+          shortId: editing,
+          createdAt: new Date() // Optionally update the timestamp
+        }, { merge: true });
+
+        setUrls(prevUrls => prevUrls.map(link => 
+          link.shortId === editing ? { ...link, originalUrl: updatedUrl } : link
+        ));
+        setEditing(null);
+        setUpdatedUrl('');
+        setError('');
+      } catch (err) {
+        console.error('Failed to update short link:', err);
+        setError('Failed to update short link');
+      }
+    }
+  };
+
   return (
-    <div>
-      <form onSubmit={handleSubmit} className="flex space-x-4">
+    <div className="p-4 sm:p-6 md:p-8 lg:p-10 text-left">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
         <Input
           type="url"
           placeholder="Enter the URL here..."
           value={originalUrl}
           onChange={(e) => setOriginalUrl(e.target.value)}
           required
+          className="flex-1"
         />
-        <Button type="submit">Create Short Link</Button>
+        <Button type="submit" className="w-full sm:w-auto">Create Short Link</Button>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="text-red-600 mt-2">{error}</p>}
+
+      {editing && (
+        <form onSubmit={handleUpdate} className="my-4">
+          <Input
+            type="url"
+            placeholder="Enter the new URL here..."
+            value={updatedUrl}
+            onChange={(e) => setUpdatedUrl(e.target.value)}
+            required
+            className="mb-2"
+          />
+          <div className="flex flex-col sm:flex-row sm:space-x-2">
+            <Button type="submit" className="mb-2 sm:mb-0">Update Short Link</Button>
+            <Button onClick={() => setEditing(null)} variant="outline">Cancel</Button>
+          </div>
+        </form>
+      )}
 
       {urls.length > 0 && (
         <div className="my-5">
           <h2 className="text-primary text-xl font-semibold mb-2">Your Short Links List:</h2>
-          <ul>
+          <ul className="space-y-2">
             {urls.map((link) => (
-              <li key={link.shortId} className="flex items-center justify-start space-x-4 mb-2">
+              <li key={link.shortId} className="flex flex-col sm:flex-row items-start space-y-2 sm:space-y-0 sm:space-x-4">
                 <Link href={`${Appconfig.domainName}/${link.shortId}`} target="_blank" rel="noopener noreferrer" className="bg-primary text-muted text-lg h-10 px-4 py-1 rounded-md">
                   {Appconfig.domainName}/{link.shortId}
                 </Link>
-                <Button variant="delete" onClick={() => deleteShortLink(link.shortId)}>Delete</Button>
+                <div className="flex  sm:flex-row sm:space-x-2 mt-2 sm:mt-0">
+                  <Button onClick={() => startEditing(link)} className="w-full sm:w-auto mb-2 mr-2 sm:mb-0">Edit</Button>
+                  <Button variant="delete" onClick={() => deleteShortLink(link.shortId)} className="w-full sm:w-auto">Delete</Button>
+                </div>
               </li>
             ))}
           </ul>

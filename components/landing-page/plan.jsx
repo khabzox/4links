@@ -1,37 +1,50 @@
 import { ArrowRight, SquareCheckBig } from "lucide-react";
-
 import Link from "next/link";
 
 export default function Plan() {
     return (
-        <section className="max-w-7xl mx-auto py-10 px-5">
+        <section className="max-w-7xl mx-auto py-12 px-5" id="Pricing">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-center mb-6 text-primary">
+                Simple Pricing for All Your Needs
+            </h2>
+            <p className="text-lg sm:text-xl font-medium text-center text-gray-600 mb-10">
+                One Plan, All Features
+            </p>
 
-            <h2 className="text-3xl font-semibold">Simple Pricing for All Your Needs</h2>
-            <p className="text-xl font-semibold pt-3 opacity-90">One Plan, All Features</p>
-
-            <div className="flex justify-center mt-10 ">
-                <div className="bg-secondary text-muted rounded-xl w-full max-w-56">
-                    <div className="px-4 pt-4">
-                        <span className="text-5xl">$9</span> / Month
+            <div className="flex justify-center">
+                <div className="bg-white text-primary rounded-3xl shadow-lg max-w-md w-full overflow-hidden border border-gray-200">
+                    <div className="bg-secondary text-white text-center py-8">
+                        <span className="text-5xl sm:text-6xl font-bold">$9</span>
+                        <div className="text-lg mt-2">/ Month</div>
                     </div>
 
-                    <ul className="p-4 text-sm space-y-2">
-                        <li className="flex items-center gap-1"><span><SquareCheckBig size={15} /></span> Unlimited Short Links</li>
-                        <li className="flex items-center gap-1"><span><SquareCheckBig size={15} /></span>Advanced Analytics</li>
-                        <li className="flex items-center gap-1"><span><SquareCheckBig size={15} /></span>Customizable URLs</li>
-                        <li className="flex items-center gap-1"><span><SquareCheckBig size={15} /></span>Priority Support</li>
+                    <ul className="p-6 text-base space-y-4">
+                        <li className="flex items-center gap-3">
+                            <SquareCheckBig size={20} className="text-primary" />
+                            Unlimited Short Links
+                        </li>
+                        <li className="flex items-center gap-3">
+                            <SquareCheckBig size={20} className="text-primary" />
+                            Advanced Analytics
+                        </li>
+                        <li className="flex items-center gap-3">
+                            <SquareCheckBig size={20} className="text-primary" />
+                            Customizable URLs
+                        </li>
+                        <li className="flex items-center gap-3">
+                            <SquareCheckBig size={20} className="text-primary" />
+                            Priority Support
+                        </li>
                     </ul>
 
-                    <Link href={"#"}>
-                        <div className="bg-destructive px-4 py-2 mt-2 rounded-xl flex items-center justify-between">
-                            <h2 className="text-muted font-semibold">
-                                Sign Up Now
-                            </h2>
-                            <ArrowRight className="bg-white/20 rounded-full text-muted p-2 w-9 h-9 ml-2" />
+                    <Link href="#">
+                        <div className="block bg-primary text-white px-6 py-4 text-center rounded-xl shadow-md transition-transform transform hover:scale-105">
+                            <span className="font-semibold text-lg">Sign Up Now</span>
+                            <ArrowRight className="inline-block text-white ml-3 w-6 h-6" />
                         </div>
                     </Link>
                 </div>
             </div>
         </section>
-    )
+    );
 }

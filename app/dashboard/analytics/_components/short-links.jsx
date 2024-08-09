@@ -4,13 +4,7 @@ import { useState, useEffect } from 'react';
 import { db } from '@/config/firebase';
 import {
   collection,
-  addDoc,
-  getDocs,
-  query,
-  where,
-  deleteDoc,
-  doc,
-  setDoc
+  getDocs
 } from 'firebase/firestore';
 
 import { useRouter } from 'next/navigation';
@@ -22,10 +16,13 @@ import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import Appconfig from '@/config/app-info';
 
+import { LoaderCircle } from "lucide-react";
+
 export default function ShortLinks() {
   const { user } = useUser();
   const router = useRouter();
 
+  const [loadingStates, setLoadingStates] = useState({});
   const [urls, setUrls] = useState([]);
 
   useEffect(() => {
@@ -46,6 +43,21 @@ export default function ShortLinks() {
     fetchUrls();
   }, [user, router]);
 
+  const handleClick = (shortId) => {
+    setLoadingStates((prevStates) => ({
+      ...prevStates,
+      [shortId]: true,
+    }));
+    
+    // Simulate some operation if necessary, e.g., fetching more data
+    setTimeout(() => {
+      setLoadingStates((prevStates) => ({
+        ...prevStates,
+        [shortId]: false,
+      }));
+    }, 1000); // Adjust timeout as needed
+  };
+
   return (
     <div>
       {urls.length > 0 && (
@@ -54,9 +66,19 @@ export default function ShortLinks() {
           <ul>
             {urls.map((link) => (
               <li key={link.shortId} className="flex items-center justify-start space-x-4 mb-2">
-                <Link href={`/dashboard/analytics/${link.shortId}`} rel="noopener noreferrer" className="bg-primary text-muted text-lg h-10 px-4 py-1 rounded-md">
+                <Link
+                  href={`/dashboard/analytics/${link.shortId}`}
+                  rel="noopener noreferrer"
+                  className="bg-primary text-muted text-lg h-10 px-4 py-1 rounded-md"
+                  onClick={() => handleClick(link.shortId)}
+                >
                   {Appconfig.domainName}/{link.shortId}
                 </Link>
+                {loadingStates[link.shortId] && (
+                  <span className="bg-primary text-muted animate-spin h-10 w-10 rounded-full flex justify-center items-center">
+                    <LoaderCircle />
+                  </span>
+                )}
               </li>
             ))}
           </ul>

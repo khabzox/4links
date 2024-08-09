@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image"
-import Link from "next/link"
-
+import Image from "next/image";
+import Link from "next/link";
 import {
     ClerkProvider,
     SignInButton,
@@ -16,43 +15,39 @@ export default function NavBar() {
     const { userId } = useAuth();
 
     return (
-        <header className={"max-w-7xl flex justify-between px-2 pt-2 items-center mx-auto"}>
-            <Link href="/" className="hover:opacity-90">
+        <header className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between bg-white shadow-md">
+            {/* Logo */}
+            <Link href="/" className="flex items-center space-x-2 hover:opacity-80">
                 <Image
-                    src={"/logo.svg"}
-                    width={150}
+                    src="/logo.svg"
+                    width={100}
                     height={50}
-                    alt={"Logo of 4Links"}
+                    alt="Logo of 4Links"
                 />
             </Link>
 
-            <div className="hidden md:block">
-                <ul className="flex space-x-4 text-xl pt-5">
-                    <li><Link href={"#"}>Home</Link></li>
-                    <li><Link href={"#"}>Features</Link></li>
-                    <li><Link href={"#"}>Pricing</Link></li>
-                    <li><Link href={"#"}>Contact</Link></li>
+            {/* Navigation Links */}
+            <nav className="hidden md:flex space-x-6">
+                <Link href="/" className="hover:text-primary transition">Home</Link>
+                <Link href="#Features" className="hover:text-primary transition">Features</Link>
+                <Link href="#Pricing" className="hover:text-primary transition">Pricing</Link>
+                <Link href="#Testimonials" className="hover:text-primary transition">Testimonials</Link>
+            </nav>
 
-                </ul>
-            </div>
-
-            <div className="space-x-4 font-semibold pt-5">
-
-                {/* <RedirectToSignIn signInFallbackRedirectUrl='/dashboard' /> */}
+            {/* User Authentication Links */}
+            <div className="flex items-center space-x-4">
                 {userId ? (
-                    <div className="flex space-x-2">
-                        <Link href="/dashboard">Dashboard</Link>
+                    <div className="flex items-center space-x-4">
+                        <Link href="/dashboard" className="hover:text-primary transition">Dashboard</Link>
                         <UserButton afterSignOutUrl="/" />
                     </div>
-
                 ) : (
                     <>
-                        <Link href="/sign-up">Register</Link>
-                        <Link href="/sign-in" className="bg-primary text-muted px-4 py-2 rounded-lg">Login</Link>
+                        <Link href="/sign-up" className="bg-gray-200 text-primary px-4 py-2 rounded-lg hover:bg-gray-300 transition">Register</Link>
+                        <Link href="/sign-in" className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition">Login</Link>
                     </>
                 )}
             </div>
         </header>
-    )
-};
-
+    );
+}
