@@ -1,38 +1,48 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import MapComponent from './map-component'; // Adjust the import path as needed
+import MapComponent from './map-component'; // Ensure this path is correct
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '@/config/firebase'; // Ensure this path is correct
+import { useUser } from '@clerk/nextjs';
 
-const LocationAnalytics = ({ ip }) => {
-  const [location, setLocation] = useState({ lat: 0, lng: 0 });
+const LocationAnalytics = ({ shortId }) => {
+  const linkId = shortId.link
+  const [locations, setLocations] = useState([]);
   const [error, setError] = useState('');
+  const { user } = useUser();
+  const userId = user?.id;
 
   useEffect(() => {
-    const fetchLocation = async () => {
+    const fetchVisitorData = async () => {
       try {
-        const response = await fetch(`https://ipapi.co/${ip}/json/`);
-        const data = await response.json();
-        if (data.latitude && data.longitude) {
-          setLocation({ lat: data.latitude, lng: data.longitude });
-        } else {
-          setError('Location data not available');
-        }
+        // Fetch visitors data for the given shortId and userId
+        console.log(shortId)
+        const visitorsCollectionRef = collection(db, `users/${userId}/shortLinks/${shortId}/visitors`);
+        const querySnapshot = await getDocs(visitorsCollectionRef);
+
+        // Extract location data
+        const fetchedLocations = querySnapshot.docs.map(doc => doc.data()).map(visitor => ({
+          lat: visitor.latitude || 0, // Default to 0 if latitude is not available
+          lng: visitor.longitude || 0 // Default to 0 if longitude is not available
+        }));
+
+        setLocations(fetchedLocations);
+
       } catch (err) {
-        console.error('Error fetching location:', err);
-        setError('Error fetching location');
+        console.error('Error fetching visitor data:', err);
+        setError('Error fetching visitor data');
       }
     };
 
-    if (ip) {
-      fetchLocation();
-    }
-  }, [ip]);
+    fetchVisitorData();
+  }, [userId, shortId]); // Ensure this effect runs when userId or linkId changes
 
   return (
     <div>
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      {location.lat !== 0 && location.lng !== 0 ? (
-        <MapComponent lat={location.lat} lng={location.lng} />
+      {locations.length > 0 ? (
+        <MapComponent locations={locations} />
       ) : (
         <p>Loading map...</p>
       )}
