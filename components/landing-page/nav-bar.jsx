@@ -1,7 +1,20 @@
+"use client";
+
 import Image from "next/image"
 import Link from "next/link"
 
+import {
+    ClerkProvider,
+    SignInButton,
+    SignedIn,
+    SignedOut,
+    UserButton,
+    useAuth,
+} from "@clerk/nextjs";
+
 export default function NavBar() {
+    const { userId } = useAuth();
+
     return (
         <header className={"max-w-7xl flex justify-between px-2 pt-2 items-center mx-auto"}>
             <Link href="/" className="hover:opacity-90">
@@ -24,8 +37,20 @@ export default function NavBar() {
             </div>
 
             <div className="space-x-4 font-semibold pt-5">
-                <Link href="/sign-up">Register</Link>
-                <Link href="/sign-in" className="bg-primary text-muted px-4 py-2 rounded-lg">Login</Link>
+
+                {/* <RedirectToSignIn signInFallbackRedirectUrl='/dashboard' /> */}
+                {userId ? (
+                    <div className="flex space-x-2">
+                        <Link href="/dashboard">Dashboard</Link>
+                        <UserButton afterSignOutUrl="/" />
+                    </div>
+
+                ) : (
+                    <>
+                        <Link href="/sign-up">Register</Link>
+                        <Link href="/sign-in" className="bg-primary text-muted px-4 py-2 rounded-lg">Login</Link>
+                    </>
+                )}
             </div>
         </header>
     )

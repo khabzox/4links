@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 
+import { Link2, ChartNoAxesCombined } from "lucide-react";
+
 export default function SidebarLayout() {
     return (
         <aside
@@ -8,35 +10,35 @@ export default function SidebarLayout() {
             <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
                 <TooltipProvider>
                     <Link
-                        href="#"
+                        href="/dashboard"
                         className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
                         prefetch={false}>
                         <LayoutGridIcon className="h-4 w-4 transition-all group-hover:scale-110" />
-                        <span className="sr-only">Acme Inc</span>
+                        <span className="sr-only">Dashboard</span>
                     </Link>
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Link
-                                href="#"
+                                href="/dashboard/short-linker"
                                 className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                                 prefetch={false}>
-                                <HomeIcon className="h-5 w-5" />
-                                <span className="sr-only">Overview</span>
+                                <Link2 className="h-5 w-5" />
+                                <span className="sr-only">Short Linker</span>
                             </Link>
                         </TooltipTrigger>
-                        <TooltipContent side="right">Overview</TooltipContent>
+                        <TooltipContent side="right">Short Linker</TooltipContent>
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Link
-                                href="#"
+                                href="/dashboard/analytics"
                                 className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                                 prefetch={false}>
-                                <WalletIcon className="h-5 w-5" />
-                                <span className="sr-only">Billing</span>
+                                <ChartNoAxesCombined className="h-5 w-5" />
+                                <span className="sr-only">Analytics</span>
                             </Link>
                         </TooltipTrigger>
-                        <TooltipContent side="right">Billing</TooltipContent>
+                        <TooltipContent side="right">Analytics</TooltipContent>
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>

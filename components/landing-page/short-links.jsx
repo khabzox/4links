@@ -1,9 +1,10 @@
 "use client"
+
 import { useState, useEffect } from 'react';
 import { db } from '@/config/firebase';
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import Link from 'next/link';
-import { v4 as uuidv4 } from 'uuid';  // Install uuid package if not already installed
+import { v4 as uuidv4 } from 'uuid';
 
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -60,7 +61,7 @@ export default function ShortLinks() {
     if (originalUrl && visitorId) {
       const shortId = Math.random().toString(36).substring(2, 8);
       try {
-        const linksCollectionRef = collection(db, "links");
+        const linksCollectionRef = collection(db, "visitors");
         await addDoc(linksCollectionRef, {
           originalUrl: originalUrl,
           shortId: shortId,
@@ -98,7 +99,7 @@ export default function ShortLinks() {
         <Button type="submit">Create Short Link</Button>
       </form>
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      {/* <div>
+      <div>
         <h2>Short Links List</h2>
         <ul>
           {urls.map((link, index) => (
@@ -109,7 +110,7 @@ export default function ShortLinks() {
             </li>
           ))}
         </ul>
-      </div> */}
+      </div>
     </div>
   );
 }
