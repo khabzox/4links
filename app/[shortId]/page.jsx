@@ -127,7 +127,7 @@ export default function RedirectPage({ params }) {
 
             // Update click count
             await updateDoc(docSnap.ref, {
-              clickCount: increment(0.5),
+              clickCount: increment(1),
               lastClickedAt: new Date(),
             });
 
