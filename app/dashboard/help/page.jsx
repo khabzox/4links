@@ -1,5 +1,3 @@
-// app/help/page.tsx
-
 export default function HelpPage() {
   return (
     <div className="p-6 sm:p-10 max-w-3xl mx-auto">
@@ -11,7 +9,7 @@ export default function HelpPage() {
           <a href="/dashboard/short-linker" className="text-blue-600 hover:underline">
             Short Linker
           </a>{" "}
-          page. Enter the original URL in the input field and click 'Create Short Link'. There is no limit to the number of short links you can create.
+          page. Enter the original URL in the input field and click &#39;Create Short Link&#39;. There is no limit to the number of short links you can create.
         </li>
         <li>
           <strong>Managing Short Links:</strong> On the{" "}
@@ -51,7 +49,7 @@ export default function HelpPage() {
         <div className="space-y-4">
           <div>
             <h3 className="font-semibold">How do I create a short link?</h3>
-            <p>To create a short link, navigate to the <a href="/dashboard/short-linker" className="text-blue-600 hover:underline">Short Linker</a> page, enter the original URL in the input field, and click 'Create Short Link'.</p>
+            <p>To create a short link, navigate to the <a href="/dashboard/short-linker" className="text-blue-600 hover:underline">Short Linker</a> page, enter the original URL in the input field, and click &#39;Create Short Link&#39;.</p>
           </div>
           <div>
             <h3 className="font-semibold">Can I edit a short link after creating it?</h3>

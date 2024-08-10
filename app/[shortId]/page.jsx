@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { db, analytics } from '@/config/firebase';
 import { collection, query, where, getDocs, updateDoc, increment, doc, getDoc, setDoc } from 'firebase/firestore';
@@ -10,7 +10,7 @@ export default function RedirectPage({ params }) {
   const [originalUrl, setOriginalUrl] = useState(null);
   const router = useRouter();
 
-  const fetchUserIds = async () => {
+  const fetchUserIds = useCallback(async () => {
     try {
       const usersCollectionRef = collection(db, 'users');
       const userSnapshot = await getDocs(usersCollectionRef);
@@ -19,9 +19,9 @@ export default function RedirectPage({ params }) {
       console.error('Error fetching user IDs:', error);
       return [];
     }
-  };
+  }, []);
 
-  const searchInUserShortLinks = async (userId, shortId) => {
+  const searchInUserShortLinks = useCallback(async (userId, shortId) => {
     try {
       const shortLinksRef = collection(db, 'users', userId, 'shortLinks');
       const q = query(shortLinksRef, where('shortId', '==', shortId));
@@ -31,9 +31,9 @@ export default function RedirectPage({ params }) {
       console.error(`Error searching in user ${userId}'s shortLinks:`, error);
       return null;
     }
-  };
+  }, []);
 
-  const searchAcrossAllUsers = async (shortId) => {
+  const searchAcrossAllUsers = useCallback(async (shortId) => {
     try {
       const userIds = await fetchUserIds();
       for (const userId of userIds) {
@@ -45,9 +45,9 @@ export default function RedirectPage({ params }) {
       console.error('Error searching across all users:', error);
       return null;
     }
-  };
+  }, [fetchUserIds, searchInUserShortLinks]);
 
-  const handleVisitorUpdate = async (shortId, userId, visitorData) => {
+  const handleVisitorUpdate = useCallback(async (shortId, userId, visitorData) => {
     const visitorsCollectionRef = collection(db, `users/${userId}/shortLinks/${shortId}/visitors`);
     const visitorDocRef = doc(visitorsCollectionRef, visitorData.ipAddress); // Use IP as doc ID
 
@@ -69,7 +69,7 @@ export default function RedirectPage({ params }) {
     } catch (error) {
       console.error('Error handling visitor data:', error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -155,7 +155,7 @@ export default function RedirectPage({ params }) {
     };
 
     fetchData(); // Call the async function
-  }, [params]);
+  }, [params, searchAcrossAllUsers, handleVisitorUpdate]);
 
   useEffect(() => {
     if (originalUrl) {
