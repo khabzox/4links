@@ -15,36 +15,31 @@ export default function NavBar() {
     const { userId } = useAuth();
 
     return (
-        <header className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between bg-white shadow-md">
+        <header className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between shadow-md">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2 hover:opacity-80">
-                <Image
-                    src="/logo.svg"
-                    width={100}
-                    height={50}
-                    alt="Logo of 4Links"
-                />
+                <h1 className="font-bold text-2xl">4Links</h1>
             </Link>
 
             {/* Navigation Links */}
-            <nav className="hidden md:flex space-x-6">
-                <Link href="/" className="hover:text-primary transition">Home</Link>
-                <Link href="#Features" className="hover:text-primary transition">Features</Link>
-                <Link href="#Pricing" className="hover:text-primary transition">Pricing</Link>
-                <Link href="#Testimonials" className="hover:text-primary transition">Testimonials</Link>
+            <nav className="hidden md:flex space-x-6 text-white/85">
+                <Link href="/" className="transition">Home</Link>
+                <Link href="#Features" className="transition">Features</Link>
+                <Link href="#Pricing" className="transition">Pricing</Link>
+                <Link href="#Testimonials" className="transition">Testimonials</Link>
             </nav>
 
             {/* User Authentication Links */}
             <div className="flex items-center space-x-4">
                 {userId ? (
                     <div className="flex items-center space-x-4">
-                        <Link href="/dashboard" className="hover:text-primary transition">Dashboard</Link>
+                        <Link href="/dashboard" className="transition">Dashboard</Link>
                         <UserButton afterSignOutUrl="/" />
                     </div>
                 ) : (
                     <>
-                        <Link href="/sign-up" className="bg-gray-200 text-primary px-4 py-2 rounded-lg hover:bg-gray-300 transition">Register</Link>
-                        <Link href="/sign-in" className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition">Login</Link>
+                        <Link href="/sign-in" className="text-white/90">Login</Link>
+                        <Link href="/sign-up" className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">Register</Link>
                     </>
                 )}
             </div>

@@ -29,12 +29,11 @@ import {
   ClerkProvider,
 } from '@clerk/nextjs'
 
-
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${inter.className} text-primary`}>
+        <body className={`${inter.className} text-white bg-black`}>
           {children}
         </body>
       </html>
