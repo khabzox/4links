@@ -14,6 +14,8 @@ const LocationAnalytics = ({ shortId }) => {
   const { user } = useUser();
   const userId = user?.id;
 
+console.log(userId)
+
   useEffect(() => {
     const fetchVisitorData = async () => {
       try {

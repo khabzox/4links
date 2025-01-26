@@ -12,11 +12,13 @@ import { Spotlight } from "@/components/ui/spotlight";
 export default function Home() {
   return (
     <>
-     <Spotlight/>
-      <NavBar />
-     <Hero />
-      <WhyUs />
-      <Footer />
+      <main className="text-white bg-black">
+        <Spotlight />
+        <NavBar />
+        <Hero />
+        <WhyUs />
+        <Footer />
+      </main>
     </>
   )
 }

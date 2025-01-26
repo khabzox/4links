@@ -27,13 +27,14 @@ export const metadata = {
 
 import {
   ClerkProvider,
-} from '@clerk/nextjs'
+} from '@clerk/nextjs';
 
 export default function RootLayout({ children }) {
+  
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${inter.className} text-white bg-black`}>
+        <body className={inter.className}>
           {children}
         </body>
       </html>
